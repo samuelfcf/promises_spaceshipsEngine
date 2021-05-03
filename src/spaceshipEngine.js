@@ -4,7 +4,6 @@ export default class SpaceshipEngine {
   }
 
   async checkCurrentCharge() {
-
     let currentCharge = this.spaceship.currentChargeInPercent()
 
     if (currentCharge < 30) {
