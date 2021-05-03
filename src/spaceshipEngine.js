@@ -1,24 +1,53 @@
 export default class SpaceshipEngine {
-  constructor(spaceship){
+  constructor(spaceship) {
     this.spaceship = spaceship
   }
 
-  checkCurrentCharge() {
-    return new Promise((resolve, reject) => {
-      let currentCharge = this.spaceship.currentChargeInPercent()
+  async checkCurrentCharge() {
 
-      if(currentCharge >= 30) {
-        resolve(currentCharge)
-      } else reject(currentCharge)
-    })
+    let currentCharge = this.spaceship.currentChargeInPercent()
+
+    if (currentCharge < 30) {
+      return Promise.reject(`Carga em apenas ${currentCharge}GJ`)
+    }
+    return currentCharge
+
   }
 
-  turnOn() {
-    this.checkCurrentCharge().then(currentCharge => {
-      console.log(`(${this.spaceship.name}) Partida autorizada: carga atual em ${currentCharge}`)
-    }).catch(currentCharge => {
-      console.log(`(${this.spaceship.name}) Partida não autorizada: carga com apenas ${currentCharge}`)
-    })
+  async turnOn() {
+    try {
+      let currentChargeCheking = this.checkCurrentCharge()
+      let shieldChecking = this.testShield()
+      let results = await Promise.all([currentChargeCheking, shieldChecking])
+      
+      this.spaceship.shield = await this.shieldNormalizer(results[1])
+     
+      console.log(`(${this.spaceship.name}) Partida autorizada: Escudo (${this.spaceship.shield})- Carga (${this.spaceship.currentCharge}GJ)`)
+
+    } catch (err) {
+      console.log(`Partida nao autorizada: ${err}`)
+    }
+
+  }
+
+  async testShield() {
+
+    let doubleShield = this.spaceship.shield * 2
+
+    if (doubleShield < 100) {
+      return Promise.reject("Escudo em sobrecarga")
+    }
+    return doubleShield
+
+  }
+
+  async shieldNormalizer(shield) {
+    let normalizedShield = shield * 0.7
+
+    if (normalizedShield > 120) {
+      return Promise.reject("Escudo em supercarga")
+    }
+    return normalizedShield
   }
 
 }

@@ -1,5 +1,5 @@
 {
-  "name": "EX_utilizando_promises",
+  "name": "promises",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -17,5 +17,9 @@
     "webpack": "^5.27.2",
     "webpack-cli": "^4.5.0",
     "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {
+    "core-js": "^3.11.2",
+    "regenerator-runtime": "^0.13.7"
   }
 }
